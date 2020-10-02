@@ -1,0 +1,264 @@
+USE sql_store;
+
+
+SELECT * 
+FROM customers
+-- WHERE customer_id = 1
+ORDER BY first_name;
+
+SELECT first_name , points
+FROM customers;
+
+
+SELECT first_name , points , points * 10
+FROM customers;
+
+Arithmetic poerators
+
+*, / , + , - , %
+
+(* and /  have higher precedence , () can be used to override)
+
+SELECT first_name , points , points * 10 AS discount_price
+FROM customers; 
+
+SELECT first_name , points , points * 10 AS 'discount price' 
+FROM customers; (within quotes when space is available)
+
+SELECT DISTINCT state FROM customers; (only unique value returned)
+
+SELECT * FROM sql_store.customers
+WHERE points > 3000;
+
+SELECT * FROM sql_store.customers
+WHERE state='VA'; (either single or double quotes for string)
+
+Comparison operators
+>
+<
+>=
+<=
+=
+for not equal to either != or <>
+
+SELECT * FROM sql_store.customers
+WHERE birth_date  > '1990-01-01' (date in year-month-date format)
+
+Logical Operators
+AND
+OR
+NOT
+
+(Predence AND , OR in order - () can be added to override)
+
+SELECT * FROM sql_store.customers
+WHERE birth_date  > '1990-01-01' AND points > 1000
+
+SELECT * FROM sql_store.customers
+WHERE NOT (birth_date  > '1990-01-01' AND points > 1000)
+
+
+SELECT * FROM sql_store.customers
+WHERE  state ='VA'OR state='FL';
+
+SELECT * FROM sql_store.customers
+WHERE  state IN('VA','FL')
+
+Above both are same
+
+SELECT * FROM sql_store.customers
+WHERE points BETWEEN 1000 and 3000 (includes 1000 and 3000, logical operators can be used as an alternative)
+
+SELECT * FROM sql_store.customers
+WHERE birth_date BETWEEN '1990-01-01' AND '2020-01-01'
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE 'b%' (last_name starts with b and any number of characters further)
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE '%b%' (character b in last name)
+
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE '%y' (ends with character y in last name)
+
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE 'Nase_y' (_ for any single character at that place)
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE 'Nas__y'
+
+SELECT * FROM sql_store.customers
+WHERE last_name LIKE '%field';
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP 'field'
+
+Above both are same (give same results)
+
+REGEXP is more powerful when comes to string
+
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP '^field'; (starts with field)
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP 'field$' (ends with field)
+
+SELECT * FROM sql_store.customers
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP '[a-h]e';
+WHERE last_name REGEXP 'field|mac' (contains field or mac in name)
+
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP 'e'; (contains e)
+
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP '[gmd]e'; (either ge, me or de in last_name)
+
+SELECT * FROM sql_store.customers
+WHERE last_name REGEXP '[a-h]e'; (a to h before e)
+
+SELECT * FROM sql_store.customers
+WHERE phone IS NULL;
+
+SELECT * FROM sql_store.customers
+WHERE phone IS NOT NULL;
+
+SELECT customer_id,first_name FROM sql_store.customers
+ORDER BY first_name;
+
+SELECT customer_id,first_name,state  FROM sql_store.customers
+ORDER BY state, first_name; (first order with state done and then the first name)
+
+SELECT customer_id,first_name,state, 10 as marks  FROM sql_store.customers
+ORDER BY state, first_name; (one more column named marks with value 10 displayed)
+
+SELECT customer_id,first_name,state, 10 as marks  FROM sql_store.customers
+ORDER BY state DESC, first_name DESC; (in descending order - both state and first_name)
+
+SELECT * FROM sql_store.order_items
+WHERE order_id=2 
+ORDER BY quantity * unit_price DESC;
+
+SELECT *, quantity * unit_price AS 'total price' FROM sql_store.order_items
+WHERE order_id=2 
+ORDER BY quantity * unit_price DESC;
+
+
+SELECT *, quantity * unit_price AS 'total price' FROM sql_store.order_items
+WHERE order_id=2 
+ORDER BY 'total price' DESC;
+
+Above two statements give same result
+
+SELECT * from customers
+LIMIT 3; (first three rows)
+
+SELECT * from customers
+LIMIT 6,3 (offset 6 and then read 3 rows)
+
+SELECT * from customers
+WHERE points > 2500
+ORDER BY points DESc
+LIMIT 3
+
+SELECT * 
+FROM orders
+JOIN customers
+	 ON orders.customer_id = customers.customer_id (first columns from orders and then customers are displayed)
+
+Joins - helps to display columns from multiple tables.
+        helps to display columns from multiple database
+SELECT * 
+FROM orders o
+JOIN customers c
+	 ON o.customer_id = c.customer_id (with alias name - by default its inner join)
+
+SELECT order_id, o.customer_id,last_name
+FROM orders o
+JOIN customers c
+	 ON o.customer_id = c.customer_id
+
+Joining different database
+
+SELECT * 
+FROM order_items oi
+JOIN sql_inventory.products p
+	ON oi.product_id = p.product_id;
+
+self join (join with same table)
+
+SELECT * 
+FROM employees e
+JOIN employees m
+     ON e.reports_to=m.employee_id
+
+SELECT e.employee_id,e.first_name,m.first_name
+FROM employees e
+JOIN employees m
+     ON e.reports_to=m.employee_id
+
+SELECT e.employee_id,e.first_name,m.first_name AS manager
+FROM employees e
+JOIN employees m
+     ON e.reports_to=m.employee_id
+
+Join multiple tables
+
+SELECT *
+FROM orders o
+JOIN customers c
+	ON o.customer_id = c.customer_id
+JOIN order_statuses os
+    ON o.status= os.order_status_id
+
+SELECT o.order_id, o.order_date, c.first_name,c.last_name,os.name AS status
+FROM orders o
+JOIN customers c
+	ON o.customer_id = c.customer_id
+JOIN order_statuses os
+    ON o.status= os.order_status_id
+
+Composite primary key- Having more than one column as primary key (eg:- order_id and product_id in order_items table)
+Compound join condition (mutiple columns used to uniquely identify, otherwise duplicated).
+
+SELECT * 
+FROM order_items oi
+JOIN order_item_notes oin
+  ON oi.order_Id = oin.order_Id 
+  AND oi.product_id = oin.product_id (no matching rows found)
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
