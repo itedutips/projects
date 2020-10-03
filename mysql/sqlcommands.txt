@@ -231,6 +231,108 @@ FROM order_items oi
 JOIN order_item_notes oin
   ON oi.order_Id = oin.order_Id 
   AND oi.product_id = oin.product_id (no matching rows found)
+
+implicit join syntax (2nd one)
+
+SELECT * 
+from customers c
+JOIN orders o
+	 ON c.customer_id = o.customer_id;
+     
+SELECT * from customers c , orders o
+WHERE c.customer_id = o.customer_id (implicit join example)
+
+
+The above two gives same result. The second is the implicit join syntax
+
+Outer join (LEFT or RIGHT)
+
+SELECT c.customer_id, c.first_name, o.order_id
+from customers c
+LEFT JOIN orders o
+	ON c.customer_id = o.customer_id (condition is ignored, all rows from left table [i.e . customer] taken)
+ORDER BY c.customer_id
+
+
+SELECT c.customer_id, c.first_name, o.order_id
+from customers c
+LEFT OUTER JOIN orders o
+	ON c.customer_id = o.customer_id (condition is ignored, all rows from left table [i.e . customer] taken)
+ORDER BY c.customer_id
+
+Above both are same
+
+
+SELECT c.customer_id, c.first_name, o.order_id
+from orders o
+RIGHT JOIN customers c
+	ON c.customer_id = o.customer_id (condition is ignored, all rows from right table [i.e., customer] taken)
+ORDER BY c.customer_id
+
+Outer joins with multiple tables
+
+SELECT c.customer_id, c.first_name, o.order_id, s.shipper_id AS shipper
+from customers c
+LEFT JOIN orders o
+	ON c.customer_id = o.customer_id
+LEFT JOIN shippers s
+    ON s.shipper_id = o.shipper_id
+ORDER BY c.customer_id
+
+self outer join
+USE sql_hr;
+
+SELECT e.employee_id, e.first_name,m.first_name AS Manager
+FROM employees e
+LEFT JOIN employees m
+	ON e.reports_to = m.employee_id
+
+Using USING
+
+SELECT * 
+FROM customers c
+JOIN orders o
+     ON c.customer_id = o.customer_id;
+     
+     
+SELECT * 
+FROM customers c
+JOIN orders o
+     USING(customer_id);
+
+Above 2 queries gives same results and are identical
+
+Natural joint
+
+SELECT * 
+FROM customers c
+NATURAL JOIN orders o
+  
+Natural joins automatically checks the matching columns . Discouraged to use since we are letting database to the work.
+
+Cross join- All the records from each table are mapped without a condition
+
+SELECT c.first_name, p.name 
+FROM customers c
+CROSS JOIN products p
+ORDER BY c.first_name
+
+Union- Join table results
+
+SELECT order_id,order_date, 'Áctive' AS status
+FROM sql_store.orders
+WHERE order_date >= "2019-01'-01"
+UNION
+SELECT order_id,order_date, 'Árchived' AS status
+FROM sql_store.orders
+WHERE order_date < "2019-01'-01"
+
+
+
+ 
+
+
+
   
 
 
