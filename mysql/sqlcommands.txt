@@ -327,6 +327,111 @@ SELECT order_id,order_date, 'Árchived' AS status
 FROM sql_store.orders
 WHERE order_date < "2019-01'-01"
 
+Inserting rows
+PK - DEFAULT or value
+Non mandatory inputs - DEFAULT or value
+
+INSERT INTO customers
+VALUES (
+	 DEFAULT,
+     "Alex",
+     "Kurian",
+     NULL,
+     NULL,
+     "address",
+     "city",
+     "KL",
+     DEFAULT);
+
+INSERT INTO customers (first_name,last_name,address,city, state)
+VALUES (
+     "Alex",
+     "Thomas",
+     "address",
+     "city",
+     "KL"
+     );
+
+Inserting multiple rows
+
+INSERT INTO products  (name, quantity_in_stock,unit_price)
+VALUES  ("Adapter - 1", 5, 10.50),
+        ("Adapter -2 ", 5, 10),
+        ("Adapter -2 ", 5, 10.50)
+        
+
+VARACHAR - allocated only the required characters
+CHAR - always allocates the specified characters at the time of column declartion.
+
+Inserting hirearchical data in multiple tables
+
+INSERT INTO orders
+	(customer_id , order_date,status)
+VALUES
+    (1,'2020-10-04',1);
+INSERT INTO order_items
+VALUES
+    (LAST_INSERT_ID(),1,5,2.95),
+	(LAST_INSERT_ID(),2,5,2.95)
+	
+Copying a table 
+
+CREATE TABLE orders_archived AS
+SELECT * FROM orders (primary keys are not copied) - Sub query starts with SELECT
+
+INSERT INTO orders_archived 
+SELECT * FROM orders
+WHERE order_date < '2018-01-01' (subquery for INSERT)
+
+Updating a single row
+
+UPDATE invoices
+SET payment_total=10, payment_date='2020-10-04'
+WHERE invoice_id =1
+
+UPDATE invoices 
+SET payment_total = invoice_total * 0.5,
+    payment_date = '2020-10-04'
+WHERE client_id=3
+
+Updating multiple rows
+
+UPDATE invoices 
+SET payment_total = invoice_total * 0.55,
+    payment_date = due_date
+WHERE client_id IN (3,1); (From mssql workbench , if safemode on,it may not work. Turn off safe mode 
+from preferences  dialog and reconnect)
+
+Sub query
+
+UPDATE invoices 
+SET payment_total = invoice_total,
+    payment_date = due_date
+WHERE client_id = (
+	SELECT client_id 
+	FROM clients
+	WHERE name = 'Myworks'); (Sub query with within parantesis)
+	
+UPDATE invoices 
+SET payment_total = invoice_total,
+    payment_date = due_date
+WHERE client_id IN (
+	SELECT client_id 
+	FROM clients
+	WHERE state IN ('NY','CA'));
+	
+DELETE FROM invoices
+WHERE invoice_id=1;
+
+DELETE FROM invoices
+WHERE client_id = (
+	SELECT client_id FROM clients WHERE name='Myworks' )
+
+	
+	
+
+
+
 
 
  
