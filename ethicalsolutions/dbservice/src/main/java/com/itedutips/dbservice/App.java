@@ -9,7 +9,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import com.itedutips.dbservice.model.Products;
+import com.itedutips.dbservice.model.Customer;
+import com.itedutips.dbservice.model.Product;
 
 
 /**
