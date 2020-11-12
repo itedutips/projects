@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="order")
+@Table(name="order_table")
 public class Order {
 	
 	@Id
@@ -22,29 +22,55 @@ public class Order {
 	
 	long orderNumber;
 	
-	@ManyToOne
-    @JoinColumn(name = "customer_id")
-	long customerId;
 	
 	@ManyToOne
     @JoinColumn(name = "product_id")
-	long productId;
+	Product product;
+	
+	@ManyToOne
+    @JoinColumn(name = "customer_id")
+	Customer customer;
+	
 	int quantity;
 	Date dateOfOrder;
 	String deliveryStatus;
 	
 	
-	public Order(long orderNumber, long customerId, long productId, int quantity, Date dateOfOrder,
+	public Order(long orderNumber,int quantity, Date dateOfOrder,
 			String deliveryStatus) {
 		super();
 		
 		this.orderNumber = orderNumber;
-		this.customerId = customerId;
-		this.productId = productId;
 		this.quantity = quantity;
 		this.dateOfOrder = dateOfOrder;
 		this.deliveryStatus = deliveryStatus;
 	}
+	
+	
+
+	public Product getProduct() {
+		return product;
+	}
+
+
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+
 
 	public Long getOrderId() {
 		return orderId;
@@ -62,21 +88,6 @@ public class Order {
 		this.orderNumber = orderNumber;
 	}
 
-	public long getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(long customerId) {
-		this.customerId = customerId;
-	}
-
-	public long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(long productId) {
-		this.productId = productId;
-	}
 
 	public int getQuantity() {
 		return quantity;

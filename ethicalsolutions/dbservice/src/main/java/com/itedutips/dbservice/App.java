@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import com.itedutips.dbservice.model.Customer;
+import com.itedutips.dbservice.model.Order;
 import com.itedutips.dbservice.model.Product;
 
 
@@ -25,21 +26,36 @@ public class App
         String str = "2020-11-10";
         Date date=Date.valueOf(str);//converting string into sql date
         
-        Products product = new Products(1000, "Zodiac Shirt", "Clothes", "Gents Shirt",
+        Product product = new Product("Zodiac Shirt", "Clothes", "Gents Shirt",
     			258, 400, date , 5)  ;
-        
-       
+        Customer customer=new Customer("George", "apartment address", "locality","landmark",
+    			"city", (long)555000,"India", 91, "mainmobileno","altmobileno"); 
+                      
         Configuration cf = new Configuration();
-        cf.configure("hibernate.cfg.xml").addAnnotatedClass(Products.class); 
-       
+        cf.configure("hibernate.cfg.xml").addAnnotatedClass(Product.class)
+        								 .addAnnotatedClass(Customer.class)
+        								 .addAnnotatedClass(Order.class); 
+    
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(cf.getProperties()).build();
         SessionFactory sf = cf
                 .buildSessionFactory(serviceRegistry);
         Session session= sf.openSession();
-        Transaction transaction = session.beginTransaction();
+        session.beginTransaction();
         session.save(product);
+        session.save(customer);
         session.getTransaction().commit();
+        
+        String orderStr = "2020-11-11";
+        Date orderDate=Date.valueOf(orderStr);
+         		
+        Order order = new Order(100,5,orderDate,"pending");
+        order.setCustomer(customer);
+        order.setProduct(product); 
+        session.beginTransaction();
+        session.save(order);
+        session.getTransaction().commit();
+         
         session.close();
         sf.close();
         
