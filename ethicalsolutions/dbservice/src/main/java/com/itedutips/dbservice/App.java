@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import com.itedutips.dbservice.model.Customer;
+import com.itedutips.dbservice.model.HibernateUtil;
 import com.itedutips.dbservice.model.Order;
 import com.itedutips.dbservice.model.Product;
 
@@ -29,17 +30,10 @@ public class App
         Product product = new Product("Zodiac Shirt", "Clothes", "Gents Shirt",
     			258, 400, date , 5)  ;
         Customer customer=new Customer("George", "apartment address", "locality","landmark",
-    			"city", (long)555000,"India", 91, "mainmobileno","altmobileno"); 
-                      
-        Configuration cf = new Configuration();
-        cf.configure("hibernate.cfg.xml").addAnnotatedClass(Product.class)
-        								 .addAnnotatedClass(Customer.class)
-        								 .addAnnotatedClass(Order.class); 
+    			"city", (long)555000,"India", 91, "mainmobileno","altmobileno");
+        
     
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(cf.getProperties()).build();
-        SessionFactory sf = cf
-                .buildSessionFactory(serviceRegistry);
+        SessionFactory sf = HibernateUtil.getSessionFactory();
         Session session= sf.openSession();
         session.beginTransaction();
         session.save(product);
